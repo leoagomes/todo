@@ -60,7 +60,7 @@ The following keys have meaning or are otherwise reserved for `todo` handling:
   - One of `open`, `closed`, or `completed`.
 - `stage`
   - Optional.
-  - Must be one of your defined "stages".
+  - Must be one of your defined "stages" ([see "config"](./config.md)).
 - `tags`
   - Optional.
   - An array of string "tags" for this task. Can be queried, and will be
