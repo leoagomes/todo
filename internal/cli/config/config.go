@@ -1,43 +1,47 @@
 package config
 
 import (
-	"errors"
-	"os"
-
-	"github.com/goccy/go-yaml"
+	"github.com/spf13/viper"
 )
 
 type Config struct {
-	TasksDirectory string `yaml:"tasks-directory"`
-	MetaDirectory  string `yaml:"meta-directory"`
+	TasksDirectory string `mapstructure:"tasks-directory"`
+	MetaDirectory  string `mapstructure:"meta-directory"`
 }
 
-var Default = Config{
-	TasksDirectory: "tasks",
-	MetaDirectory:  ".todo",
-}
+// Load initializes and returns a Config using Viper
+// It will load from the specified path if it exists, otherwise use defaults
+func Load(configPath string) (*Config, error) {
+	v := viper.New()
 
-func LoadFile(path string) (*Config, error) {
-	data, err := os.ReadFile(path)
-	if err != nil {
-		return nil, err
+	// Set defaults
+	v.SetDefault("tasks-directory", "tasks")
+	v.SetDefault("meta-directory", ".todo")
+
+	// Configure Viper
+	if configPath != "" {
+		v.SetConfigFile(configPath)
+	} else {
+		// Look for config in common locations
+		v.SetConfigName(".todo")
+		v.SetConfigType("yaml")
+		v.AddConfigPath(".")
+		v.AddConfigPath("$HOME")
+	}
+
+	// Read config file (ignore error if file doesn't exist)
+	if err := v.ReadInConfig(); err != nil {
+		if _, ok := err.(viper.ConfigFileNotFoundError); !ok {
+			// Config file was found but another error occurred
+			return nil, err
+		}
+		// Config file not found; use defaults
 	}
 
 	var cfg Config
-	if err := yaml.Unmarshal(data, &cfg); err != nil {
+	if err := v.Unmarshal(&cfg); err != nil {
 		return nil, err
 	}
 
 	return &cfg, nil
-}
-
-func LoadFileOrDefault(path string) (*Config, error) {
-	cfg, err := LoadFile(path)
-	if err != nil {
-		if errors.Is(err, os.ErrNotExist) {
-			return &Default, nil
-		}
-		return nil, err
-	}
-	return cfg, nil
 }
