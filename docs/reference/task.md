@@ -81,5 +81,29 @@ The following keys have meaning or are otherwise reserved for `todo` handling:
   - Optional.
   - An array of task IDs, main or alternate, that this task references.
   - This data will be displayed in the UI.
+- `created-at`
+  - Optional.
+  - An ISO8622 timestamp string of when this task was created.
+  - This is added by default when a task is created with `todo new`.
 
 Any other keys will be queriable from `todo`, but are otherwise ignored.
+
+## Tasks as directories
+
+You can have directories in your `tasks/` directory. This allows for better
+organization of your files if you wanted to add, for example, images to your
+tasks.
+
+The top-level directory's name will be used as the task's main ID, this is so
+tasks are easily findable by looking at just `tasks/`. The actual task markdown
+file then needs to live directly in that directory, with the name of `task.md`.
+
+For example, you could have the following structure:
+
+```
+tasks/
+  example-task.md
+  other-task/
+    related-image.jpg
+    task.md                <- this task's main ID will be "other-task"
+```
