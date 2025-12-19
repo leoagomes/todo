@@ -77,5 +77,9 @@ The following keys have meaning or are otherwise reserved for `todo` handling:
   - Optional.
   - This will be your task's summary/description.
   - If not provided, it'll be derived from the task's first paragraph.
+- `references`
+  - Optional.
+  - An array of task IDs, main or alternate, that this task references.
+  - This data will be displayed in the UI.
 
 Any other keys will be queriable from `todo`, but are otherwise ignored.
